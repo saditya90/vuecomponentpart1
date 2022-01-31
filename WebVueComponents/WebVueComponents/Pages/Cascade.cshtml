@@ -1,0 +1,97 @@
+﻿@page
+@model CascadeModel
+@{
+    ViewData["Title"] = "Cascade Dropdown";
+}
+
+<h4>Cascade-Component</h4>
+
+<div id="app">
+    <div class="row mb-2">
+        <div class="col-md-12">
+            <p class="h6">Bind through API data</p>
+            <v-cascade-dropdown v-bind:options="options" 
+                                v-on:parent-changed="countryChanged"
+                                v-on:child-changed="stateChanged">
+            </v-cascade-dropdown>
+            <span class="mt-2" id="spanResult1"></span>
+        </div> 
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p class="h6">Bind through LOCAL data</p>
+            <v-cascade-dropdown v-bind:options="options1"
+                                v-on:parent-changed="edibleChanged"
+                                v-on:child-changed="edibleTypeChanged">
+            </v-cascade-dropdown>
+            <span class="mt-2" id="spanResult2"></span>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript"> 
+       let app = new Vue({
+           el: '#app',
+           data() {
+               return {
+                   options: {
+                       parentUrl: '@Url.Content("/api/values/countries")',
+                       childUrl: '@Url.Content("/api/values/states")',
+                       parentLabel: 'Country',
+                       parentDefaultOption: 'Choose country...',
+                       childLabel: 'State',
+                       childDefaultOption: 'Choose state...'
+                   },
+                   options1: {
+                       isServerSide: false,
+                       parentLabel: 'Edible items',
+                       parentDefaultOption: 'Choose edible item...',
+                       parentData: [{ id: 1, name: 'Fruits' }, { id: 2, name: 'Vegetables' }, { id: 3, name: 'Meat' }],
+                       childLabel: 'Category',
+                       childDefaultOption: 'Choose category...',
+                       childData: [{ id: 1, name: 'Fig', parentId: 1 }, { id: 2, name: 'Osage', parentId: 1 }, { id: 3, name: 'Gooseberry', parentId: 1 },
+                           { id: 4, name: 'Cabbage', parentId: 2 }, { id: 5, name: 'Asparagus', parentId: 2 }, { id: 6, name: 'Goat', parentId: 3 }, { id: 6, name: 'Chicken', parentId: 3 }]
+                   }
+               }
+           },
+           methods: { 
+               countryChanged: function (c) {
+                   let vm = this;
+                   if (c != '') {
+                       document.getElementById("spanResult1").innerHTML = 'Selected country- ' + vm.$children[0].parentData.filter(function (v) { return v.id == c })[0].name;
+                   } else
+                       document.getElementById("spanResult1").innerHTML = '';
+               },
+               stateChanged: function (s) {
+                   let vm = this;
+                   if (s != '') {
+                       let c = vm.$children[0];
+                       let country = c.parentData.filter(function (v) { return v.id == c.parentId })[0].name;
+                       let state = c.childData.filter(function (v) { return v.id == s })[0].name;
+                       document.getElementById("spanResult1").innerHTML = 'Selected country- ' + country + ', Selected state- ' + state;
+                   } else
+                       document.getElementById("spanResult1").innerHTML = '';
+               },
+               edibleChanged: function (e) {
+                   let vm = this;
+                   if (e != '') {
+                       document.getElementById("spanResult2").innerHTML = 'Selected edible- ' + vm.$children[1].parentData.filter(function (v) { return v.id == e })[0].name;
+                   } else
+                       document.getElementById("spanResult2").innerHTML = '';
+               },
+               edibleTypeChanged: function (t) {
+                   let vm = this;
+                   if (t != '') {
+                       let c = vm.$children[1];
+                       let edible = c.parentData.filter(function (v) { return v.id == c.parentId })[0].name;
+                       let edibleType = c.childData.filter(function (v) { return v.id == t })[0].name;
+                       document.getElementById("spanResult2").innerHTML = 'Selected edible- ' + edible + ', Selected edible-Type- ' + edibleType;
+                   } else
+                       document.getElementById("spanResult2").innerHTML = '';
+               }
+           }
+       });
+    </script>
+}

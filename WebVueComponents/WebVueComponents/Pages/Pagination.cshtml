@@ -1,0 +1,60 @@
+﻿@page
+@model PaginationModel
+@{
+    ViewData["Title"] = "Pagination";
+}
+<h4>Vue-Paginator</h4>
+
+<p class="h6">This page uses <b>v-paginator</b> component with different configuration.</p>
+
+<div id="app" class="row">
+    <div class="col-md-12 mb-2">
+        <p class="h6 mt-4 text-center">Postion center and number of page links {{noPageLinks}}, per page results {{pagePerCount}}, total result {{totalRecords}}.</p>
+        <v-paginator v-bind:total-records="totalRecords"
+                     v-bind:page-per-count="pagePerCount"
+                     v-bind:no-page-links="noPageLinks"
+                     v-bind:position="'justify-content-center'">
+        </v-paginator>
+        <p class="h6 mt-4">Postion left and number of page links 3, per page results 5, total result 30.</p>
+        <v-paginator v-bind:total-records="30"
+                     v-bind:page-per-count="5"
+                     v-bind:no-page-links="3"
+                     v-bind:position="'justify-content-start'">
+        </v-paginator>
+        <p class="h6 mt-4 text-right">Postion right and number of page links 3, per page results 6, total result 25.</p>
+        <v-paginator v-bind:total-records="25"
+                     v-bind:page-per-count="6"
+                     v-bind:no-page-links="3"
+                     v-bind:position="'justify-content-end'">
+        </v-paginator>
+        <p class="h6 mt-4 text-center">Postion center and number of page links 4, per page results 6, total result 26.</p>
+        <v-paginator v-bind:total-records="26"
+                     v-bind:page-per-count="6"
+                     v-bind:no-page-links="4"
+                     v-bind:position="'justify-content-center'">
+        </v-paginator>
+        <p class="text-center h6">Below pagination happening over 10 million total count. With per page 100 results</p>
+        <v-paginator v-bind:total-records="10000000"
+                     v-bind:page-per-count="100"
+                     v-bind:no-page-links="5"
+                     v-bind:show-page-detail="true"
+                     v-bind:position="'justify-content-start'">
+        </v-paginator>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+       let app = new Vue({
+           el: "#app",
+           data() {
+               return {
+                   totalRecords: 50,
+                   pagePerCount: 5,
+                   noPageLinks: 10
+               }
+           }
+       });
+    </script>
+}

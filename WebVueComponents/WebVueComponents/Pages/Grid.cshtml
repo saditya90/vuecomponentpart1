@@ -1,0 +1,164 @@
+﻿@page
+@model GridModel
+@{
+    ViewData["Title"] = "Grid";
+}
+
+<h4>Grid Component</h4>
+<p class="h6">This page uses <b>v-grid</b> component with different configuration. <b>v-grid</b> internally uses <b>paginator</b> component.</p>
+<div class="row mt-4" id="app">
+    <div class="col-md-12">
+        <p>Grid without pagination and search</p>
+        <v-grid v-bind:columns="columns"
+                v-bind:pagination="false"
+                v-bind:is-search="false"
+                v-bind:dataurl="dataurl">
+        </v-grid>
+    </div>
+    <div class="col-md-12 mt-2">
+        <p>Grid with pagination and search( By default pagination and search is enabled )</p>
+        <v-grid v-bind:columns="columns"
+                v-bind:dataurl="dataurl">
+        </v-grid>
+    </div>
+    <div class="col-md-12 mt-2">
+        <p>Grid with local data</p>
+        <v-grid v-bind:columns="columns_1"
+                v-bind:gdata="gridData"
+                v-on:content-changed="contentChanged"
+                v-bind:server-processing="false" ref="vgrid">
+        </v-grid>
+    </div> 
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalTitle">Edit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">First</label>
+                        <input type="text" class="form-control" id="first" v-model="currentRecord.first">
+                    </div>
+                    <div class="form-group">
+                        <label for="last">Last</label>
+                        <input type="text" class="form-control" id="last" v-model="currentRecord.last">
+                    </div>
+                    <div class="form-group">
+                        <label for="handle">Handle</label>
+                        <input type="text" class="form-control" id="handle" v-model="currentRecord.handle">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" v-on:click="save" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalTitle">Confirm</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure to delete?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" v-on:click="remove" class="btn btn-danger">Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{ 
+    <script type="text/javascript">
+       let _data = [{ "id": 1, "first": "Elna", "last": "Volkman", "handle": "aunti" }, { "id": 2, "first": "Eleonore", "last": "Pouros", "handle": "aitue" }, { "id": 3, "first": "Brown", "last": "Mosciski", "handle": "tsmet" }, { "id": 4, "first": "Kris", "last": "Wyman", "handle": "rpuiq" }, { "id": 5, "first": "Keon", "last": "Dietrich", "handle": "iedot" }, { "id": 6, "first": "Vernie", "last": "Hyatt", "handle": "euqpn" }, { "id": 7, "first": "Bret", "last": "Monahan", "handle": "acntt" }, { "id": 8, "first": "Dannie", "last": "Walker", "handle": "iqspe" }, { "id": 9, "first": "Morris", "last": "Hoeger", "handle": "iqmia" }, { "id": 10, "first": "Cesar", "last": "Spencer", "handle": "eoqbs" }, { "id": 11, "first": "Lela", "last": "Gutkowski", "handle": "dndel" }, { "id": 12, "first": "Rodolfo", "last": "Marks", "handle": "tctuu" }, { "id": 13, "first": "Darrion", "last": "Paucek", "handle": "neaia" }, { "id": 14, "first": "Kameron", "last": "Osinski", "handle": "aqspi" }, { "id": 15, "first": "Jettie", "last": "Schamberger", "handle": "ttsup" }, { "id": 16, "first": "Constantin", "last": "Spinka", "handle": "qiiol" }, { "id": 17, "first": "Leon", "last": "Hyatt", "handle": "oiope" }, { "id": 18, "first": "Kathlyn", "last": "Morissette", "handle": "tutsu" }, { "id": 19, "first": "Oda", "last": "Fay", "handle": "oqoau" }, { "id": 20, "first": "Murray", "last": "Parisian", "handle": "abppm" }];
+       let app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    columns: [{ name: 'id', title: '#', visible: true, sortable: true },
+                        { name: 'first', visible: true, sortable: false },
+                        { name: 'last', visible: true, sortable: true },
+                        { name: 'handle', visible: true, sortable: false }],
+                    dataurl: '@Url.Content("/api/values/griddata")',
+                    columns_1: [{ name: 'id', title: '#', visible: true, sortable: true },
+                    { name: 'First', visible: true, sortable: false },
+                    { name: 'Last', visible: true, sortable: true },
+                    { name: 'Handle', visible: true, sortable: false },
+                    {
+                        name: 'Action', title: 'Action', visible: true, sortable: false,
+                        className: 'text-center',
+                        render: function (d) {
+                            return '<a class="b-action" data-id=' + d.id + '><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a><a class="b-action ml-2" data-id=' + d.id + '><i class="fa fa-trash-o" aria-hidden="true"></i></a>';
+                        }
+                    }],
+                    gridData: _data,
+                    currentRecord: {}
+                }
+           },
+           methods: {
+               contentChanged: function () {
+                   let vm = this;
+                   vm.$nextTick(function () {
+                       if (vm.$refs["vgrid"] !== undefined) {
+                           vm.$refs["vgrid"].$el.querySelectorAll("i.fa-pencil-square-o").forEach(function (pencil) {
+                               pencil.parentElement.addEventListener("click", function (e) {
+                                   vm.edit(e.currentTarget.getAttribute("data-id"));
+                               });
+                           });
+
+                           vm.$refs["vgrid"].$el.querySelectorAll("i.fa-trash-o").forEach(function (pencil) {
+                               pencil.parentElement.addEventListener("click", function (e) {
+                                   vm.confirmRemove(e.currentTarget.getAttribute("data-id"));
+                               });
+                           });
+                       }
+                   });
+               },
+               edit: function (id) {
+                   let vm = this;
+                   let d = vm.gridData.find(function (v) { return v.id == id; });
+                   if (d != undefined) {
+                       vm.currentRecord = d;
+                       $("#editModal").modal("show");
+                   }
+               },
+               confirmRemove: function (id) {
+                   let vm = this;
+                   let d = vm.gridData.find(function (v) { return v.id == id; });
+                   if (d != undefined) {
+                       vm.currentRecord = d;
+                       $("#deleteModal").modal("show");
+                   }
+               },
+               save: function () {
+                   //Api call goes here to save model in datasource
+                   $("#editModal").modal("hide");
+               },
+               remove: function () {
+                   let vm = this; console.log(vm.currentRecord);
+                   if (vm.currentRecord != undefined) {
+                       _data = _data.filter(function (c) { if (c.id != vm.currentRecord.id) return c });
+                       vm.gridData = _data; vm.$children[0].reload();
+                       $("#deleteModal").modal("hide");
+                   }
+               }
+           }
+        });
+        $('#deleteModal,#deleteModal').on('hidden.bs.modal', function (e) {
+            app.currentRecord = {};
+        });
+    </script>
+}

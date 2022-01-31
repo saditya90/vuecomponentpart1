@@ -1,0 +1,25 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center" id="app">
+    <h1 class="display-4">Vue-UI-Components</h1>
+    <p :style="{fontSize: fontSize+'px' }">This tutorial is about how to write basic and advanced component in vue js, which provide reusability of UI component throughout application.</p>
+    <input type="number" v-model="fontSize" min="15" max="100" step="5" />
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        let app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    fontSize: 15
+                }
+            }
+        });
+    </script>
+}
