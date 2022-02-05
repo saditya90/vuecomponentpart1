@@ -148,7 +148,7 @@
                    $("#editModal").modal("hide");
                },
                remove: function () {
-                   let vm = this; console.log(vm.currentRecord);
+                   let vm = this;
                    if (vm.currentRecord != undefined) {
                        _data = _data.filter(function (c) { if (c.id != vm.currentRecord.id) return c });
                        vm.gridData = _data; vm.$children[0].reload();
@@ -157,7 +157,7 @@
                }
            }
         });
-        $('#deleteModal,#deleteModal').on('hidden.bs.modal', function (e) {
+        $('#deleteModal,#editModal').on('hidden.bs.modal', function (e) {
             app.currentRecord = {};
         });
     </script>
